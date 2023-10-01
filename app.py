@@ -61,7 +61,7 @@ if __name__ == '__main__':
     event = create_google_calendar_event(summary, description, start_datetime, end_datetime, calendar_id, timezone)
 
     # Upload the image to Google Drive (modify with your image file path and folder ID)
-    image_file_path = 'hk.jpg'
+    image_file_path = 'test.jpg'
     folder_id = '1-dxUDRz9jcWF7efcMUI4U3wbBCMF09Lj'  # Specify the folder ID where you want to upload the image
     image_id = upload_image_to_drive(image_file_path, folder_id)
 
