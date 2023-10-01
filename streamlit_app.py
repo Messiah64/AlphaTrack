@@ -1,55 +1,72 @@
 import os
 import datetime as dt
 import streamlit as st
+import requests
+import json
 from google.oauth2 import service_account
 from googleapiclient.discovery import build
 from googleapiclient.http import MediaFileUpload
 
 # Set up Google Calendar API
 SCOPES_CALENDAR = ["https://www.googleapis.com/auth/calendar"]
-def create_google_calendar_event(summary, description, start_datetime, end_datetime, calendar_id, timezone):
-    
-    google_service_account_key = st.secrets["service"]
-    credentials = service_account.Credentials.from_service_account_file(
-        google_service_account_key, scopes=SCOPES_CALENDAR)
-    
-    service = build("calendar", "v3", credentials=credentials)
-
-    event = {
-        'summary': summary,
-        'description': description,
-        'start': {
-            'dateTime': start_datetime,
-            'timeZone': timezone,
-        },
-        'end': {
-            'dateTime': end_datetime,
-            'timeZone': timezone,
-        },
-    }
-
-    event = service.events().insert(calendarId=calendar_id, body=event).execute()
-    return event
-
 # Set up Google Drive API
 SCOPES_DRIVE = ["https://www.googleapis.com/auth/drive.file"]
-def upload_image_to_drive(image_file_path, folder_id):
-    google_service_account_key = st.secrets["service"]
-    credentials = service_account.Credentials.from_service_account_file(
-        google_service_account_key, scopes=SCOPES_CALENDAR)
+
+
+def create_google_calendar_event(summary, description, start_datetime, end_datetime, calendar_id, timezone):
     
-    drive_service = build("drive", "v3", credentials=credentials)
+    json_key = https://drive.google.com/file/d/1GFJ4sUGDMIlhO2eOuD3gst7E-MB3yjVZ/view?usp=sharing
+    response = requests.get(json_key)
 
-    file_metadata = {
-        'name': os.path.basename(image_file_path),
-        'parents': [folder_id]  # Specify the folder ID where you want to upload the image
-    }
+    # Check if succesful response
+    if response.status_code == 200:
+        json_key = json.loads(response.text)
+        credentials = service_account.Credentials.from_service_account_file(
+            json_key , scopes=SCOPES_CALENDAR)
+        
+        service = build("calendar", "v3", credentials=credentials)
 
-    media = MediaFileUpload(image_file_path, resumable=True)
+        event = {
+            'summary': summary,
+            'description': description,
+            'start': {
+                'dateTime': start_datetime,
+                'timeZone': timezone,
+            },
+            'end': {
+                'dateTime': end_datetime,
+                'timeZone': timezone,
+            },
+        }
 
-    file = drive_service.files().create(body=file_metadata, media_body=media, fields='id').execute()
+        event = service.events().insert(calendarId=calendar_id, body=event).execute()
+        return event
 
-    return file.get('id')
+
+
+def upload_image_to_drive(image_file_path, folder_id):
+    
+    json_key = https://drive.google.com/file/d/1GFJ4sUGDMIlhO2eOuD3gst7E-MB3yjVZ/view?usp=sharing
+    response = requests.get(json_key)
+
+    # Check if succesful response
+    if response.status_code == 200:
+        json_key = json.loads(response.text)
+        credentials = service_account.Credentials.from_service_account_file(
+            json_key , scopes=SCOPES_CALENDAR)
+    
+        drive_service = build("drive", "v3", credentials=credentials)
+
+        file_metadata = {
+            'name': os.path.basename(image_file_path),
+            'parents': [folder_id]  # Specify the folder ID where you want to upload the image
+        }
+
+        media = MediaFileUpload(image_file_path, resumable=True)
+
+        file = drive_service.files().create(body=file_metadata, media_body=media, fields='id').execute()
+
+        return file.get('id')
 
 def main():
     st.title('AlphaTrack - Sentosa Fire Station')
@@ -90,13 +107,18 @@ def main():
                 event['description'] = event_description
 
                 # Update the event with the new description
-                google_service_account_key = st.secrets["service"]
-                credentials_image = service_account.Credentials.from_service_account_file(
-                        google_service_account_key, scopes=SCOPES_CALENDAR)
-                service_image = build("calendar", "v3", credentials=credentials_image)
-                updated_event = service_image.events().update(calendarId=calendar_id, eventId=event['id'], body=event).execute()
+                json_key = https://drive.google.com/file/d/1GFJ4sUGDMIlhO2eOuD3gst7E-MB3yjVZ/view?usp=sharing
+                response = requests.get(json_key)
 
-                st.success(f'Event created with image: {updated_event["htmlLink"]}')
+                # Check if succesful response
+                if response.status_code == 200:
+                    json_key = json.loads(response.text)
+                    credentials = service_account.Credentials.from_service_account_file(
+                        json_key , scopes=SCOPES_CALENDAR)
+                    service_image = build("calendar", "v3", credentials=credentials_image)
+                    updated_event = service_image.events().update(calendarId=calendar_id, eventId=event['id'], body=event).execute()
+
+                    st.success(f'Event created with image: {updated_event["htmlLink"]}')
 
 if __name__ == '__main__':
     main()
