@@ -15,8 +15,8 @@ SCOPES_DRIVE = ["https://www.googleapis.com/auth/drive.file"]
 
 def create_google_calendar_event(summary, description, start_datetime, end_datetime, calendar_id, timezone):
     
-    key_dict = json.loads(st.secrets["textkey"])
-    credentials = service_account.Credentials.from_service_account_file( key_dict , scopes=SCOPES_CALENDAR)
+    key_dict = st.secrets["textkey"]
+    credentials = service_account.Credentials.from_service_account_info( key_dict , scopes=SCOPES_CALENDAR)
         
     service = build("calendar", "v3", credentials=credentials)
 
@@ -40,8 +40,8 @@ def create_google_calendar_event(summary, description, start_datetime, end_datet
 
 def upload_image_to_drive(image_file_path, folder_id):
     
-    key_dict = json.loads(st.secrets["textkey"])
-    credentials = service_account.Credentials.from_service_account_file( key_dict , scopes=SCOPES_CALENDAR)
+    key_dict = st.secrets["textkey"]
+    credentials = service_account.Credentials.from_service_account_info( key_dict , scopes=SCOPES_CALENDAR)
     
     drive_service = build("drive", "v3", credentials=credentials)
 
@@ -94,8 +94,8 @@ def main():
                 event_description = f'{description}\nLocation: {location}\nImage URL: https://drive.google.com/uc?id={image_id}'
                 event['description'] = event_description
 
-                key_dict = json.loads(st.secrets["textkey"])
-                credentials_image = service_account.Credentials.from_service_account_file( key_dict , scopes=SCOPES_CALENDAR)
+                key_dict = st.secrets["textkey"]
+                credentials_image = service_account.Credentials.from_service_account_info( key_dict , scopes=SCOPES_CALENDAR)
                 service_image = build("calendar", "v3", credentials=credentials_image)
                 updated_event = service_image.events().update(calendarId=calendar_id, eventId=event['id'], body=event).execute()
 
