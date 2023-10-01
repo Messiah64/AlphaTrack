@@ -9,8 +9,7 @@ from googleapiclient.http import MediaFileUpload
 SCOPES_CALENDAR = ["https://www.googleapis.com/auth/calendar"]
 def create_google_calendar_event(summary, description, start_datetime, end_datetime, calendar_id, timezone):
     
-    google_service_account_key = st.secrets["google_service_account_key"]
-    
+    google_service_account_key = st.secrets["service"]
     credentials = service_account.Credentials.from_service_account_file(
         google_service_account_key, scopes=SCOPES_CALENDAR)
     
@@ -35,8 +34,9 @@ def create_google_calendar_event(summary, description, start_datetime, end_datet
 # Set up Google Drive API
 SCOPES_DRIVE = ["https://www.googleapis.com/auth/drive.file"]
 def upload_image_to_drive(image_file_path, folder_id):
+    google_service_account_key = st.secrets["service"]
     credentials = service_account.Credentials.from_service_account_file(
-        'service.json', scopes=SCOPES_DRIVE)
+        google_service_account_key, scopes=SCOPES_CALENDAR)
     
     drive_service = build("drive", "v3", credentials=credentials)
 
@@ -90,8 +90,9 @@ def main():
                 event['description'] = event_description
 
                 # Update the event with the new description
+                google_service_account_key = st.secrets["service"]
                 credentials_image = service_account.Credentials.from_service_account_file(
-                    'service.json', scopes=SCOPES_CALENDAR)
+                        google_service_account_key, scopes=SCOPES_CALENDAR)
                 service_image = build("calendar", "v3", credentials=credentials_image)
                 updated_event = service_image.events().update(calendarId=calendar_id, eventId=event['id'], body=event).execute()
 
