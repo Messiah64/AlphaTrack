@@ -15,18 +15,12 @@ SCOPES_DRIVE = ["https://www.googleapis.com/auth/drive.file"]
 
 def create_google_calendar_event(summary, description, start_datetime, end_datetime, calendar_id, timezone):
     
-    json_key = "https://drive.google.com/uc?export=download&id=1GFJ4sUGDMIlhO2eOuD3gst7E-MB3yjVZ"
-    response = requests.get(json_key)
-
-    # Check if succesful response
-    if response.status_code == 200:
-        json_key = json.loads(response.text)
-        credentials = service_account.Credentials.from_service_account_file(
-            json_key , scopes=SCOPES_CALENDAR)
+    key_dict = json.loads(st.secrets["textkey"])
+    credentials = service_account.Credentials.from_service_account_file( key_dict , scopes=SCOPES_CALENDAR)
         
-        service = build("calendar", "v3", credentials=credentials)
+    service = build("calendar", "v3", credentials=credentials)
 
-        event = {
+    event = {
             'summary': summary,
             'description': description,
             'start': {
@@ -39,34 +33,28 @@ def create_google_calendar_event(summary, description, start_datetime, end_datet
             },
         }
 
-        event = service.events().insert(calendarId=calendar_id, body=event).execute()
-        return event
+    event = service.events().insert(calendarId=calendar_id, body=event).execute()
+    return event
 
 
 
 def upload_image_to_drive(image_file_path, folder_id):
     
-    json_key = "https://drive.google.com/uc?export=download&id=1GFJ4sUGDMIlhO2eOuD3gst7E-MB3yjVZ"
-    response = requests.get(json_key)
-
-    # Check if succesful response
-    if response.status_code == 200:
-        json_key = json.loads(response.text)
-        credentials = service_account.Credentials.from_service_account_file(
-            json_key , scopes=SCOPES_CALENDAR)
+    key_dict = json.loads(st.secrets["textkey"])
+    credentials = service_account.Credentials.from_service_account_file( key_dict , scopes=SCOPES_CALENDAR)
     
-        drive_service = build("drive", "v3", credentials=credentials)
+    drive_service = build("drive", "v3", credentials=credentials)
 
-        file_metadata = {
+    file_metadata = {
             'name': os.path.basename(image_file_path),
             'parents': [folder_id]  # Specify the folder ID where you want to upload the image
-        }
+    }
 
-        media = MediaFileUpload(image_file_path, resumable=True)
+    media = MediaFileUpload(image_file_path, resumable=True)
 
-        file = drive_service.files().create(body=file_metadata, media_body=media, fields='id').execute()
+    file = drive_service.files().create(body=file_metadata, media_body=media, fields='id').execute()
 
-        return file.get('id')
+    return file.get('id')
 
 def main():
     st.title('AlphaTrack - Sentosa Fire Station')
@@ -106,19 +94,12 @@ def main():
                 event_description = f'{description}\nLocation: {location}\nImage URL: https://drive.google.com/uc?id={image_id}'
                 event['description'] = event_description
 
-                # Update the event with the new description
-                json_key = "https://drive.google.com/uc?export=download&id=1GFJ4sUGDMIlhO2eOuD3gst7E-MB3yjVZ"
-                response = requests.get(json_key)
+                key_dict = json.loads(st.secrets["textkey"])
+                credentials_image = service_account.Credentials.from_service_account_file( key_dict , scopes=SCOPES_CALENDAR)
+                service_image = build("calendar", "v3", credentials=credentials_image)
+                updated_event = service_image.events().update(calendarId=calendar_id, eventId=event['id'], body=event).execute()
 
-                # Check if succesful response
-                if response.status_code == 200:
-                    json_key = json.loads(response.text)
-                    credentials = service_account.Credentials.from_service_account_file(
-                        json_key , scopes=SCOPES_CALENDAR)
-                    service_image = build("calendar", "v3", credentials=credentials_image)
-                    updated_event = service_image.events().update(calendarId=calendar_id, eventId=event['id'], body=event).execute()
-
-                    st.success(f'Event created with image: {updated_event["htmlLink"]}')
+                st.success(f'Event created with image: {updated_event["htmlLink"]}')
 
 if __name__ == '__main__':
     main()
