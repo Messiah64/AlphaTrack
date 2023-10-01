@@ -15,7 +15,7 @@ SCOPES_DRIVE = ["https://www.googleapis.com/auth/drive.file"]
 
 def create_google_calendar_event(summary, description, start_datetime, end_datetime, calendar_id, timezone):
     
-    json_key = https://drive.google.com/file/d/1GFJ4sUGDMIlhO2eOuD3gst7E-MB3yjVZ/view?usp=sharing
+    json_key = "https://drive.google.com/file/d/1GFJ4sUGDMIlhO2eOuD3gst7E-MB3yjVZ/view?usp=sharing"
     response = requests.get(json_key)
 
     # Check if succesful response
@@ -46,7 +46,7 @@ def create_google_calendar_event(summary, description, start_datetime, end_datet
 
 def upload_image_to_drive(image_file_path, folder_id):
     
-    json_key = https://drive.google.com/file/d/1GFJ4sUGDMIlhO2eOuD3gst7E-MB3yjVZ/view?usp=sharing
+    json_key = "https://drive.google.com/file/d/1GFJ4sUGDMIlhO2eOuD3gst7E-MB3yjVZ/view?usp=sharing"
     response = requests.get(json_key)
 
     # Check if succesful response
@@ -107,7 +107,7 @@ def main():
                 event['description'] = event_description
 
                 # Update the event with the new description
-                json_key = https://drive.google.com/file/d/1GFJ4sUGDMIlhO2eOuD3gst7E-MB3yjVZ/view?usp=sharing
+                json_key = "https://drive.google.com/file/d/1GFJ4sUGDMIlhO2eOuD3gst7E-MB3yjVZ/view?usp=sharing"
                 response = requests.get(json_key)
 
                 # Check if succesful response
